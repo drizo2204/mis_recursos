@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <base target="_top">
+  <meta charset="UTF-8">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+
+  <?!= include('Global_CSS'); ?>
+</head>
+
+<body>
+  <button class="menu-toggle" id="menuToggleBtn" onclick="toggleSidebar()">&#9776;</button>
+
+  <div class="app-container">
+
+    <?!= include('Comp_Sidebar'); ?>
+
+    <div class="main-content">
+
+      <?!= include('views_of_the_system'); ?>
+
+
+    </div>
+  </div>
+
+  <?!= include('Comp_ModalVenta'); ?>
+  <?!= include('Comp_ModalTransferencia'); ?>
+  <?!= include('Comp_ModalFinanzas'); ?>
+
+
+  <?!= include('Global_JS'); ?>
+
+</body>
+
+</html>

@@ -1,0 +1,76 @@
+<!-- MODAL DE FINANZAS - Registrar Movimiento Financiero -->
+<div id="modalFinanzas" class="modal-overlay">
+    <div class="modal-venta">
+        <div class="modal-venta-header" style="background: linear-gradient(135deg, #28a745, #20c997);">
+            <h2>💰 Registrar Movimiento Financiero</h2>
+            <button class="close-modal" onclick="cerrarModalFinanzas()">&times;</button>
+        </div>
+
+        <form id="formFinanzas" onsubmit="registrarMovimientoFinancieroFront(event)">
+            <div class="modal-venta-body">
+
+                <!-- SECCIÓN: DATOS DEL MOVIMIENTO -->
+                <div class="modal-section">
+                    <div class="modal-section-title">📝 Datos del Movimiento</div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="required-field">📅 Fecha</label>
+                            <input type="date" id="finFecha" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="required-field">🔄 Tipo de Movimiento</label>
+                            <select id="finTipo" required onchange="actualizarCategoriasFinanzas()">
+                                <option value="">Seleccione...</option>
+                                <option value="Ingreso">📥 Ingreso</option>
+                                <option value="Gasto">📤 Gasto</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="required-field">🏷️ Categoría</label>
+                            <select id="finCategoria" required>
+                                <option value="">Seleccione primero el tipo...</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="required-field">💵 Monto ($)</label>
+                            <input type="number" id="finMonto" min="0.01" step="0.01" placeholder="0.00" required>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECCIÓN: RESPONSABLE -->
+                <div class="modal-section">
+                    <div class="modal-section-title">👤 Responsable</div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="required-field">Responsable</label>
+                            <select id="finResponsable" required>
+                                <option value="">Seleccione...</option>
+                                <option value="Cristian">Cristian</option>
+                                <option value="Jean">Jean</option>
+                                <option value="Luden">Luden</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECCIÓN: OBSERVACIONES -->
+                <div class="modal-section">
+                    <div class="form-group">
+                        <label>💬 Observaciones</label>
+                        <textarea id="finObservaciones" rows="3"
+                            placeholder="Detalles de la compra, origen del dinero, etc."></textarea>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="modal-venta-footer">
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="cerrarModalFinanzas()">Cancelar</button>
+                    <button type="submit" class="btn btn-success">💾 Registrar Movimiento</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,1402 @@
+<!-- DASHBOARD -->
+<div id="dashboard" class="tab-content active">
+  <div class="content-header">
+    <h2>📊 Dashboard General</h2>
+  </div>
+  <div class="content-body">
+    <div class="stats-grid" id="statsGrid">
+      <div class="stat-card"><div class="skeleton skeleton-text" style="height:36px;margin:0 auto 8px;width:60%"></div><div class="skeleton skeleton-text" style="margin:0 auto;width:80%"></div></div>
+      <div class="stat-card"><div class="skeleton skeleton-text" style="height:36px;margin:0 auto 8px;width:60%"></div><div class="skeleton skeleton-text" style="margin:0 auto;width:80%"></div></div>
+      <div class="stat-card"><div class="skeleton skeleton-text" style="height:36px;margin:0 auto 8px;width:60%"></div><div class="skeleton skeleton-text" style="margin:0 auto;width:80%"></div></div>
+      <div class="stat-card"><div class="skeleton skeleton-text" style="height:36px;margin:0 auto 8px;width:60%"></div><div class="skeleton skeleton-text" style="margin:0 auto;width:80%"></div></div>
+    </div>
+    <div class="card">
+      <div class="card-header">⚠️ Alertas de Stock</div>
+      <div class="card-body">
+        <div class="actions">
+          <button class="btn btn-primary" onclick="loadDashboard()">🔄 Actualizar</button>
+          <button class="btn btn-warning" onclick="showStockAlerts()">⚠️ Ver Alertas</button>
+        </div>
+        <div id="alertsContainer">
+          <div class="empty-state">
+            <div class="empty-state-icon">✅</div>
+            <div class="empty-state-title">Todo en orden</div>
+            <div class="empty-state-sub">Presiona "Ver Alertas" para revisar el estado del stock</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ENTRADA DE PRODUCTOS -->
+<div id="entrada" class="tab-content">
+  <div class="content-header">
+    <h2>📥 Entrada de Productos</h2>
+  </div>
+  <div class="content-body">
+
+    <div class="card">
+      <div class="card-header">➕ Registrar Entrada de Producto</div>
+      <div class="card-body">
+        <form id="formEntrada" onsubmit="registrarEntrada(event)">
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="codigoEntrada">Código del Producto *</label>
+              <div class="autocomplete-container">
+                <input id="codigoEntrada" type="text" placeholder="Ej: CAM-NEG-01" required onkeyup="buscarProductoEntrada()" onblur="ocultarAutocompletadoEntrada()">
+                <div id="autocompleteEntrada" class="autocomplete-dropdown"></div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="nombreEntrada">Nombre del Producto *</label>
+              <input id="nombreEntrada" type="text" placeholder="Descripción del producto" required>
+            </div>
+            <div class="form-group">
+              <label for="unidadEntrada">Unidad de Medida *</label>
+              <select id="unidadEntrada" required></select>
+            </div>
+            <div class="form-group">
+              <label for="grupoEntrada">Grupo / Categoría *</label>
+              <select id="grupoEntrada" required></select>
+            </div>
+            <div class="form-group">
+              <label for="cantidadEntrada">Cantidad *</label>
+              <input id="cantidadEntrada" type="number" min="0.01" step="0.01" placeholder="0" required>
+            </div>
+            <div class="form-group">
+              <label for="costoEntrada">Costo Unitario</label>
+              <input id="costoEntrada" type="number" min="0" step="0.01" placeholder="0.00" value="0">
+            </div>
+            <div class="form-group">
+              <label for="precioEntrada">Precio de Venta *</label>
+              <input id="precioEntrada" type="number" min="0.01" step="0.01" placeholder="0.00" required>
+            </div>
+            <div class="form-group">
+              <label for="stockMinEntrada">Stock Mínimo</label>
+              <input id="stockMinEntrada" type="number" min="0" value="0">
+            </div>
+            <div class="form-group">
+              <label for="almacenEntrada">Ubicación / Casa *</label>
+              <select id="almacenEntrada" required></select>
+            </div>
+            <div class="form-group">
+              <label for="descripcionEntrada">Descripción</label>
+              <textarea id="descripcionEntrada" placeholder="Descripción adicional" rows="2"></textarea>
+            </div>
+          </div>
+          <div class="actions">
+            <button type="submit" class="btn btn-success">✅ Registrar Entrada</button>
+            <button type="button" class="btn btn-secondary" onclick="limpiarFormEntrada()">🧹 Limpiar</button>
+          </div>
+        </form>
+        <div id="msgEntrada"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">📤 Importación Masiva desde CSV</div>
+      <div class="card-body">
+        <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:16px;line-height:1.6;">
+          Sube un archivo CSV con columnas: <strong>Producto, Variante, Luden, Dylan, Jean, Código, Costo, Precio</strong>. Las columnas A y B se unirán como descripción del producto.
+        </p>
+        <div class="form-group" style="margin-bottom:16px;">
+          <label for="archivoCSV">Seleccionar archivo CSV</label>
+          <input type="file" id="archivoCSV" accept=".csv" style="margin-top:8px;">
+        </div>
+        <div class="actions">
+          <button type="button" class="btn btn-primary" onclick="procesarImportacionCSV()">⚙️ Procesar Importación</button>
+          <button type="button" class="btn btn-secondary" onclick="limpiarImportacion()">🧹 Limpiar</button>
+        </div>
+        <div id="msgImportacion"></div>
+        <div id="resultadoImportacion"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- MOVIMIENTOS -->
+<div id="movimientos" class="tab-content">
+  <div class="content-header">
+    <h2>📋 Movimientos</h2>
+  </div>
+  <div class="content-body">
+
+    <div class="action-cards-grid">
+      <div class="action-card primary" onclick="abrirModalTransferencia()">
+        <div class="action-card-icon">🔄</div>
+        <div class="action-card-title">Transferir Stock</div>
+        <div class="action-card-sub">Mover unidades entre ubicaciones</div>
+      </div>
+      <div class="action-card success" onclick="abrirModalVenta()">
+        <div class="action-card-icon">💵</div>
+        <div class="action-card-title">Registrar Venta</div>
+        <div class="action-card-sub">Nueva venta con carrito de productos</div>
+      </div>
+    </div>
+
+    <div id="msgMov"></div>
+
+    <div class="card">
+      <div class="card-header" style="display:flex;justify-content:space-between;align-items:center;">
+        <span>🕐 Movimientos Recientes</span>
+        <button class="btn btn-outline" style="padding:6px 14px;font-size:0.78rem;width:auto;" onclick="loadMovimientosRecientes()">🔄 Actualizar</button>
+      </div>
+      <div class="card-body">
+        <div id="feedMovimientos">
+          <div class="loading">Cargando movimientos...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- INVENTARIO -->
+<div id="inventario" class="tab-content">
+  <div class="content-header">
+    <h2>📦 Inventario</h2>
+  </div>
+  <div class="content-body">
+
+    <div class="kpi-grid">
+      <div class="kpi-card"><div class="kpi-label">Total Productos</div><div class="kpi-value blue" id="kpiTotalProductos">—</div></div>
+      <div class="kpi-card"><div class="kpi-label">Sin Stock</div><div class="kpi-value red" id="kpiSinStock">—</div></div>
+      <div class="kpi-card"><div class="kpi-label">Stock Bajo</div><div class="kpi-value orange" id="kpiStockBajo">—</div></div>
+      <div class="kpi-card"><div class="kpi-label">Valor en Inventario</div><div class="kpi-value green" id="kpiValorTotal">—</div></div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">Stock Actual</div>
+      <div class="card-body">
+        <div class="search-bar">
+          <input type="text" id="invBuscarTexto" placeholder="🔍 Buscar por código o nombre..." oninput="filtrarTablaInventario(this.value)">
+          <button class="btn btn-primary" style="flex:none;" onclick="mostrarStock()">🔄 Actualizar</button>
+          <button class="btn btn-success" style="flex:none;" onclick="exportarStock()">⬇️ Exportar</button>
+          <button class="btn btn-warning" style="flex:none;" onclick="mostrarAlertas()">⚠️ Alertas</button>
+        </div>
+        <div id="loading" style="display:none;" class="loading">Cargando inventario...</div>
+        <div class="table-container">
+          <div id="stockTable">
+            <div class="empty-state">
+              <div class="empty-state-icon">📦</div>
+              <div class="empty-state-title">Cargando inventario...</div>
+              <div class="empty-state-sub">El stock aparecerá aquí en unos segundos</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- BUSCAR PRODUCTO -->
+<div id="buscar" class="tab-content">
+  <div class="content-header">
+    <h2>🔍 Buscar Producto</h2>
+  </div>
+  <div class="content-body">
+    <div class="card">
+      <div class="card-header">Buscar por Código o Nombre</div>
+      <div class="card-body">
+        <div class="search-bar">
+          <input id="buscarTexto" type="text" placeholder="Escribe el código o nombre del producto..." onkeyup="buscarEnTiempoReal()">
+          <button class="btn btn-primary" style="flex:none;" onclick="buscarProducto()">🔍 Buscar</button>
+          <button class="btn btn-secondary" style="flex:none;" onclick="limpiarBusqueda()">🧹 Limpiar</button>
+        </div>
+        <div id="resultadosBusqueda">
+          <div class="empty-state">
+            <div class="empty-state-icon">🔍</div>
+            <div class="empty-state-title">Busca un producto</div>
+            <div class="empty-state-sub">Escribe el código o nombre para encontrarlo</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- REPORTES -->
+<div id="reportes" class="tab-content">
+  <div class="content-header">
+    <h2>📊 Reportes</h2>
+  </div>
+  <div class="content-body">
+    <div class="card">
+      <div class="card-header">🔍 Filtros de Búsqueda</div>
+      <div class="card-body">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="fechaDesde">📅 Desde</label>
+            <input id="fechaDesde" type="date">
+          </div>
+          <div class="form-group">
+            <label for="fechaHasta">📅 Hasta</label>
+            <input id="fechaHasta" type="date">
+          </div>
+          <div class="form-group">
+            <label for="filtroTipo">Tipo de Movimiento</label>
+            <select id="filtroTipo" onchange="manejarCambioTipoReporte()">
+              <option value="">Todos los movimientos</option>
+              <option value="INGRESO">📥 Ingresos</option>
+              <option value="SALIDA">📤 Salidas</option>
+              <option value="VENTA">💰 Ventas</option>
+              <option value="AJUSTE_POSITIVO">➕ Ajustes Positivos</option>
+              <option value="AJUSTE_NEGATIVO">➖ Ajustes Negativos</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="filtroUbicacion">📍 Ubicación</label>
+            <select id="filtroUbicacion"><option value="">Todas las ubicaciones</option></select>
+          </div>
+          <div class="form-group">
+            <label for="filtroProducto">📦 Producto</label>
+            <select id="filtroProducto"><option value="">Todos los productos</option></select>
+          </div>
+          <div class="form-group" id="filtroVendedorGroup" style="display:none;">
+            <label for="filtroVendedor">👤 Vendedor</label>
+            <select id="filtroVendedor"><option value="">Todos los vendedores</option></select>
+          </div>
+        </div>
+        <div class="actions">
+          <button class="btn btn-primary" onclick="mostrarHistorial()">🔍 Generar Reporte</button>
+          <button class="btn btn-success" onclick="exportarReporte()">📥 Exportar CSV</button>
+          <button class="btn btn-secondary" onclick="limpiarFiltrosReporte()">🔄 Limpiar</button>
+        </div>
+        <div id="resumenReporte"></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header">📋 Resultados</div>
+      <div class="card-body">
+        <div id="historialTable">
+          <div class="empty-state">
+            <div class="empty-state-icon">📋</div>
+            <div class="empty-state-title">Sin resultados todavía</div>
+            <div class="empty-state-sub">Selecciona un rango de fechas y presiona "Generar Reporte"</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CONFIGURACION -->
+<div id="configuracion" class="tab-content">
+  <div class="content-header">
+    <h2>⚙️ Configuración</h2>
+  </div>
+  <div class="content-body">
+    <div class="config-tools">
+      <div class="config-tool-card">
+        <div class="config-tool-icon">🔬</div>
+        <div class="config-tool-title">Validar Integridad</div>
+        <div class="config-tool-desc">Verifica que todas las hojas y datos estén correctos y sin inconsistencias.</div>
+        <div style="margin-top:14px;"><button class="btn btn-info" style="width:100%;" onclick="validarIntegridad()">Ejecutar Validación</button></div>
+      </div>
+      <div class="config-tool-card">
+        <div class="config-tool-icon">🚀</div>
+        <div class="config-tool-title">Inicializar Sistema</div>
+        <div class="config-tool-desc">Crea o reinicializa todas las hojas necesarias en Google Sheets. No borra datos existentes.</div>
+        <div style="margin-top:14px;"><button class="btn btn-success" style="width:100%;" onclick="inicializarSistema()">Inicializar</button></div>
+      </div>
+      <div class="config-tool-card">
+        <div class="config-tool-icon">🧹</div>
+        <div class="config-tool-title">Limpiar Formularios</div>
+        <div class="config-tool-desc">Resetea todos los formularios y limpia los datos temporales cargados en pantalla.</div>
+        <div style="margin-top:14px;"><button class="btn btn-warning" style="width:100%;" onclick="limpiarTodosFormularios()">Limpiar Todo</button></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header">📋 Resultado de Operaciones</div>
+      <div class="card-body">
+        <div id="configResults">
+          <div class="empty-state">
+            <div class="empty-state-icon">⚙️</div>
+            <div class="empty-state-title">Selecciona una herramienta</div>
+            <div class="empty-state-sub">El resultado de las operaciones aparecerá aquí</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FINANZAS -->
+<div id="finanzas" class="tab-content">
+  <div class="content-header">
+    <h2>💰 Finanzas y Flujo de Caja</h2>
+  </div>
+  <div class="content-body">
+
+    <!-- KPIs financieros -->
+    <div class="fin-kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-label">💚 Ingresos del Mes</div>
+        <div class="kpi-value green" id="finKpiIngresos">—</div>
+        <div class="kpi-sub">Capital · préstamos · otros</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">🔴 Gastos del Mes</div>
+        <div class="kpi-value red" id="finKpiGastos">—</div>
+        <div class="kpi-sub">Logística · marketing · operativos</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">📊 Utilidad Neta</div>
+        <div class="kpi-value blue" id="finKpiUtilidad">—</div>
+        <div class="kpi-sub">Ingresos – Gastos del mes</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">📝 Registrar Movimiento</div>
+      <div class="card-body">
+        <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:16px;line-height:1.6;">
+          Registra ingresos de capital y gastos operativos para llevar el control financiero del negocio.
+        </p>
+        <div class="actions">
+          <button class="btn btn-success" onclick="abrirModalFinanzas()">➕ Registrar Movimiento</button>
+        </div>
+        <div id="msgFinanzas"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header" style="display:flex;justify-content:space-between;align-items:center;">
+        <span>🕐 Historial de Movimientos</span>
+        <button class="btn btn-outline" style="padding:6px 14px;font-size:0.78rem;width:auto;" onclick="loadFinanzasResumen()">🔄 Actualizar</button>
+      </div>
+      <div class="card-body">
+        <div id="historialFinanzas">
+          <div class="loading">Cargando historial...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- DASHBOARD ANALITICO - Dark Theme -->
+<div id="analytics" class="tab-content">
+  <div class="dark-dashboard" id="darkDashboard">
+
+    <style>
+      /* -- SCOPED DARK DASHBOARD STYLES -- */
+      .dark-dashboard {
+        --dbg: #0a0a0f;
+        --dsurface: #111118;
+        --dcard: #16161f;
+        --dborder: #252530;
+        --daccent1: #667eea;
+        --daccent2: #43e97b;
+        --daccent3: #f5576c;
+        --daccent4: #a78bfa;
+        --dtext: #f0f0f5;
+        --dmuted: #666680;
+        background: var(--dbg);
+        color: var(--dtext);
+        font-family: 'DM Mono', monospace;
+        min-height: 100vh;
+        padding: 0;
+        margin: -20px -15px;
+        position: relative;
+        /* == ANTI-WOBBLE == */
+        overflow: clip;
+        box-sizing: border-box;
+      }
+
+      /* == ANTI-WOBBLE: strict containment for all dashboard children == */
+      .dark-dashboard *,
+      .dark-dashboard *::before,
+      .dark-dashboard *::after {
+        box-sizing: border-box;
+      }
+
+      .dark-dashboard .dd-header,
+      .dark-dashboard .dd-main,
+      .dark-dashboard .dd-panel {
+        max-width: 100%;
+        overflow: clip;
+      }
+
+      .dark-dashboard .dd-nav {
+        max-width: 100%;
+        overflow-x: auto;
+        overflow-y: visible;
+      }
+
+      /* Tables inside cards: internal scroll, not page wobble */
+      .dd-card {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .dd-card table {
+        min-width: 500px;
+        width: 100%;
+      }
+
+      .dd-card canvas {
+        max-width: 100% !important;
+      }
+
+      .dark-dashboard .dd-grid-2,
+      .dark-dashboard .dd-grid-3,
+      .dark-dashboard .dd-kpi-grid {
+        max-width: 100%;
+        overflow: clip;
+      }
+
+      @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&display=swap');
+
+      /* HEADER */
+      .dd-header {
+        padding: 28px 32px 20px;
+        border-bottom: 1px solid var(--dborder);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 16px;
+        background: linear-gradient(180deg, #0e0e18 0%, transparent 100%);
+      }
+
+      .dd-logo {
+        font-family: 'Syne', sans-serif;
+        font-weight: 800;
+        font-size: 22px;
+        color: var(--daccent1);
+        letter-spacing: -0.5px;
+      }
+
+      .dd-logo span {
+        color: var(--dmuted);
+        font-weight: 400;
+      }
+
+      .dd-header-right {
+        display: flex;
+        align-items: center;
+        gap: 24px;
+        flex-wrap: wrap;
+      }
+
+      .dd-hstats {
+        display: flex;
+        gap: 28px;
+      }
+
+      .dd-hstat {
+        text-align: right;
+      }
+
+      .dd-hstat-val {
+        font-family: 'Syne', sans-serif;
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--daccent1);
+      }
+
+      .dd-hstat-lbl {
+        font-size: 10px;
+        color: var(--dmuted);
+        letter-spacing: 1px;
+        text-transform: uppercase;
+      }
+
+      .dd-actions {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      .dd-btn-action {
+        padding: 8px 16px;
+        border-radius: 6px;
+        border: 1px solid var(--dborder);
+        font-family: 'DM Mono', monospace;
+        font-size: 12px;
+        cursor: pointer;
+        transition: all .2s;
+        background: transparent;
+        color: var(--dmuted);
+      }
+
+      .dd-btn-action:hover {
+        border-color: var(--daccent1);
+        color: var(--daccent1);
+      }
+
+      .dd-btn-action.primary {
+        background: var(--daccent1);
+        color: #0a0a0f;
+        border-color: var(--daccent1);
+        font-weight: 500;
+      }
+
+      .dd-btn-action.primary:hover {
+        background: #d4ec3f;
+      }
+
+      .dd-btn-action.danger {
+        border-color: var(--daccent3);
+        color: var(--daccent3);
+      }
+
+      .dd-btn-action.danger:hover {
+        background: rgba(255, 107, 107, .15);
+      }
+
+      /* NAV */
+      .dd-nav {
+        display: flex;
+        gap: 4px;
+        padding: 14px 32px;
+        border-bottom: 1px solid var(--dborder);
+        overflow-x: auto;
+      }
+
+      .dd-nav::-webkit-scrollbar {
+        display: none;
+      }
+
+      .dd-tab {
+        padding: 8px 16px;
+        border: 1px solid transparent;
+        border-radius: 6px;
+        cursor: pointer;
+        font-family: 'DM Mono', monospace;
+        font-size: 12px;
+        letter-spacing: .5px;
+        color: var(--dmuted);
+        background: transparent;
+        transition: all .2s;
+        white-space: nowrap;
+      }
+
+      .dd-tab:hover {
+        color: var(--dtext);
+        border-color: var(--dborder);
+      }
+
+      .dd-tab.active {
+        background: var(--daccent1);
+        color: #0a0a0f;
+        font-weight: 500;
+        border-color: var(--daccent1);
+      }
+
+      /* MAIN */
+      .dd-main {
+        padding: 28px 32px;
+      }
+
+      .dd-panel {
+        display: none;
+      }
+
+      .dd-panel.active {
+        display: block;
+      }
+
+      /* GRID */
+      .dd-grid-2 {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        gap: 20px;
+        margin-bottom: 20px;
+      }
+
+      .dd-grid-3 {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr);
+        gap: 20px;
+        margin-bottom: 20px;
+      }
+
+      .dd-grid-full {
+        margin-bottom: 20px;
+      }
+
+      /* CARDS */
+      .dd-card {
+        background: var(--dcard);
+        border: 1px solid var(--dborder);
+        border-radius: 12px;
+        padding: 24px;
+        position: relative;
+        min-width: 0;
+        animation: ddFadeUp .4s ease both;
+      }
+
+      .dd-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: var(--daccent1);
+        opacity: 0;
+        transition: opacity .3s;
+      }
+
+      .dd-card:hover::before {
+        opacity: 1;
+      }
+
+      @keyframes ddFadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(16px)
+        }
+
+        to {
+          opacity: 1;
+          transform: translateY(0)
+        }
+      }
+
+      .dd-card-title {
+        font-family: 'Syne', sans-serif;
+        font-size: 11px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--dmuted);
+        margin-bottom: 16px;
+      }
+
+      /* KPI */
+      .dd-kpi-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 16px;
+        margin-bottom: 24px;
+      }
+
+      .dd-kpi {
+        background: var(--dcard);
+        border: 1px solid var(--dborder);
+        border-radius: 12px;
+        padding: 20px 24px;
+        animation: ddFadeUp .4s ease both;
+      }
+
+      .dd-kpi:nth-child(2) {
+        animation-delay: .05s
+      }
+
+      .dd-kpi:nth-child(3) {
+        animation-delay: .1s
+      }
+
+      .dd-kpi:nth-child(4) {
+        animation-delay: .15s
+      }
+
+      .dd-kpi:nth-child(5) {
+        animation-delay: .2s
+      }
+
+      .dd-kpi:nth-child(6) {
+        animation-delay: .25s
+      }
+
+      .dd-kpi-label {
+        font-size: 10px;
+        color: var(--dmuted);
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        margin-bottom: 8px;
+      }
+
+      .dd-kpi-value {
+        font-family: 'Syne', sans-serif;
+        font-size: 26px;
+        font-weight: 800;
+        color: var(--dtext);
+      }
+
+      .dd-kpi-sub {
+        font-size: 11px;
+        color: var(--dmuted);
+        margin-top: 4px;
+      }
+
+      .kpi-c1 {
+        color: var(--daccent1)
+      }
+
+      .kpi-c2 {
+        color: var(--daccent2)
+      }
+
+      .kpi-c3 {
+        color: var(--daccent3)
+      }
+
+      .kpi-c4 {
+        color: var(--daccent4)
+      }
+
+      /* FILTER */
+      .dd-filter-bar {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        margin-bottom: 24px;
+        flex-wrap: wrap;
+      }
+
+      .dd-filter-label {
+        font-size: 11px;
+        color: var(--dmuted);
+        letter-spacing: 1px;
+        text-transform: uppercase;
+      }
+
+      .dd-filter-btn {
+        padding: 6px 14px;
+        border: 1px solid var(--dborder);
+        border-radius: 4px;
+        background: transparent;
+        color: var(--dmuted);
+        font-family: 'DM Mono', monospace;
+        font-size: 11px;
+        cursor: pointer;
+        transition: all .2s;
+      }
+
+      .dd-filter-btn:hover {
+        border-color: var(--daccent1);
+        color: var(--daccent1);
+      }
+
+      .dd-filter-btn.active {
+        background: var(--daccent1);
+        color: #0a0a0f;
+        border-color: var(--daccent1);
+      }
+
+      /* TABLE */
+      .dd-card table {
+        width: 100%;
+        border-collapse: collapse;
+        display: block;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        white-space: nowrap;
+      }
+
+      .dd-card table thead,
+      .dd-card table tbody,
+      .dd-card table tr {
+        display: table;
+        width: 100%;
+        table-layout: fixed;
+      }
+
+      .dd-card th {
+        text-align: left;
+        font-size: 10px;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        color: var(--dmuted);
+        padding: 10px 14px;
+        border-bottom: 2px solid var(--dborder);
+        background: var(--dsurface);
+        position: sticky;
+        top: 0;
+        z-index: 1;
+      }
+
+      .dd-card td {
+        padding: 12px 14px;
+        font-size: 13px;
+        border-bottom: 1px solid rgba(37, 37, 48, .4);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        background: var(--dcard);
+        color: var(--dtext);
+      }
+
+      .dd-card tr:hover td {
+        background: rgba(102, 126, 234, .10);
+      }
+
+      .dd-rank {
+        font-family: 'Syne', sans-serif;
+        font-weight: 700;
+        color: var(--dmuted);
+        font-size: 16px;
+        width: 32px;
+      }
+
+      .dd-rank.gold {
+        color: #ffd700
+      }
+
+      .dd-rank.silver {
+        color: #c0c0c0
+      }
+
+      .dd-rank.bronze {
+        color: #cd7f32
+      }
+
+      .dd-bar-inline {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .dd-bar-track {
+        flex: 1;
+        height: 4px;
+        background: var(--dborder);
+        border-radius: 2px;
+        overflow: hidden;
+      }
+
+      .dd-bar-fill {
+        height: 100%;
+        border-radius: 2px;
+        background: var(--daccent1);
+        transition: width .6s ease;
+      }
+
+      /* VEND SELECTOR */
+      .dd-vend-btn {
+        padding: 8px 20px;
+        border-radius: 6px;
+        border: 1px solid var(--dborder);
+        background: transparent;
+        cursor: pointer;
+        font-family: 'DM Mono', monospace;
+        font-size: 12px;
+        color: var(--dmuted);
+        transition: all .2s;
+      }
+
+      .dd-vend-btn.av1 {
+        background: rgba(232, 255, 71, .1);
+        border-color: var(--daccent1);
+        color: var(--daccent1)
+      }
+
+      .dd-vend-btn.av2 {
+        background: rgba(71, 196, 255, .1);
+        border-color: var(--daccent2);
+        color: var(--daccent2)
+      }
+
+      .dd-vend-btn.av3 {
+        background: rgba(255, 107, 107, .1);
+        border-color: var(--daccent3);
+        color: var(--daccent3)
+      }
+
+      .dd-section-title {
+        font-family: 'Syne', sans-serif;
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 20px;
+        color: var(--dtext);
+      }
+
+      .dd-section-title span {
+        color: var(--daccent1);
+      }
+
+      .dd-card canvas {
+        max-height: 300px;
+        width: 100% !important;
+        min-width: 0 !important;
+        object-fit: contain;
+      }
+
+      /* TIMELINE */
+      .dd-timeline-item {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding: 10px 0;
+        border-bottom: 1px solid rgba(37, 37, 48, .5);
+      }
+
+      .dd-timeline-rank {
+        font-family: 'Syne', sans-serif;
+        font-weight: 800;
+        font-size: 22px;
+        width: 36px;
+        text-align: center;
+        color: var(--dmuted);
+      }
+
+      .dd-timeline-date {
+        font-size: 13px;
+        color: var(--dtext);
+        width: 110px;
+        flex-shrink: 0;
+      }
+
+      .dd-timeline-amount {
+        font-family: 'Syne', sans-serif;
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--daccent1);
+        width: 100px;
+        flex-shrink: 0;
+      }
+
+      .dd-timeline-info {
+        font-size: 11px;
+        color: var(--dmuted);
+      }
+
+      /* LOADING */
+      .dd-loading {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 80px 0;
+        font-family: 'Syne', sans-serif;
+        font-size: 16px;
+        color: var(--dmuted);
+      }
+
+      .dd-loading::before {
+        content: '';
+        width: 20px;
+        height: 20px;
+        border: 2px solid var(--dborder);
+        border-top-color: var(--daccent1);
+        border-radius: 50%;
+        animation: ddSpin .8s linear infinite;
+        margin-right: 12px;
+      }
+
+      @keyframes ddSpin {
+        to {
+          transform: rotate(360deg)
+        }
+      }
+
+      /* BADGE */
+      .dd-badge {
+        display: inline-block;
+        padding: 3px 10px;
+        border-radius: 4px;
+        font-size: 10px;
+        font-weight: 500;
+        letter-spacing: .5px;
+      }
+
+      .dd-badge-ing {
+        background: rgba(67, 233, 123, .15);
+        color: #43e97b;
+      }
+
+      .dd-badge-gas {
+        background: rgba(255, 107, 107, .15);
+        color: var(--daccent3);
+      }
+
+      /* RESPONSIVE */
+      @media(max-width:1024px) {
+        .dd-grid-2 {
+          grid-template-columns: 1fr;
+        }
+
+        .dd-kpi-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+
+        .dd-header {
+          flex-wrap: wrap;
+        }
+
+        .dd-header-right {
+          width: 100%;
+        }
+
+        .dd-actions {
+          flex-wrap: wrap;
+        }
+      }
+
+      @media(max-width:768px) {
+        .dark-dashboard {
+          margin: -16px -12px;
+        }
+
+        .dd-header {
+          padding: 20px 12px 16px;
+        }
+
+        .dd-hstats {
+          gap: 12px;
+          flex-wrap: wrap;
+          width: 100%;
+        }
+
+        .dd-hstat-val {
+          font-size: 14px;
+        }
+
+        .dd-actions {
+          width: 100%;
+          flex-wrap: wrap;
+          gap: 6px;
+        }
+
+        .dd-btn-action {
+          flex: 1 1 auto;
+          min-width: 0;
+          font-size: 11px;
+          padding: 6px 10px;
+        }
+
+        .dd-nav {
+          padding: 10px 12px;
+          overflow-x: auto;
+          -webkit-overflow-scrolling: touch;
+          scrollbar-width: none;
+          -ms-overflow-style: none;
+        }
+
+        .dd-nav::-webkit-scrollbar {
+          display: none;
+        }
+
+        .dd-grid-2,
+        .dd-grid-3,
+        .dd-kpi-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .dd-logo {
+          font-size: 20px;
+        }
+
+        .dd-tab {
+          white-space: nowrap;
+          flex-shrink: 0;
+        }
+
+        .dd-main {
+          padding: 20px 12px;
+        }
+
+        .dd-card table thead,
+        .dd-card table tbody,
+        .dd-card table tr {
+          display: table;
+          width: max-content;
+          min-width: 100%;
+          table-layout: auto;
+        }
+
+        .dd-card th,
+        .dd-card td {
+          padding: 8px 10px;
+          font-size: 12px;
+        }
+      }
+
+      @media(max-width:480px) {
+        .dd-kpi-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .dd-kpi {
+          padding: 14px;
+        }
+
+        .dd-kpi-value {
+          font-size: 20px;
+        }
+
+        .dd-card {
+          padding: 16px;
+        }
+
+        .dd-section-title {
+          font-size: 18px;
+        }
+
+        .dd-actions {
+          gap: 6px;
+        }
+
+        .dd-btn-action {
+          padding: 6px 12px;
+          font-size: 11px;
+        }
+      }
+
+      /* =========================================================
+         ADAPTACION PARA CELULARES (RESPONSIVE DESIGN)
+         ========================================================= */
+      @media (max-width: 768px) {
+
+        /* 1. Reducir los bordes (paddings) para aprovechar la pantalla */
+        .dd-header,
+        .dd-nav,
+        .dd-main {
+          padding-left: 16px !important;
+          padding-right: 16px !important;
+        }
+
+        /* 2. El encabezado (header) pasa a estar uno debajo del otro */
+        .dd-header {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 16px;
+        }
+
+        /* 3. Las estadisticas del header se ajustan al ancho */
+        .dd-hstats {
+          width: 100%;
+          justify-content: space-between;
+          gap: 8px;
+          flex-wrap: wrap;
+        }
+
+        /* 4. Convierte la grilla de KPIs a 2 columnas (1 en <480px) */
+        .dd-kpi-grid {
+          grid-template-columns: 1fr 1fr;
+          gap: 12px;
+        }
+
+        /* 5. Convierte las grillas de 2 y 3 columnas a 1 sola columna */
+        .dd-grid-2,
+        .dd-grid-3 {
+          grid-template-columns: 1fr;
+        }
+
+        /* 6. Barra de navegacion (tabs): scroll interno suave */
+        .dd-nav {
+          flex-wrap: nowrap;
+          overflow-x: auto;
+          -webkit-overflow-scrolling: touch;
+          padding-bottom: 12px;
+          width: 100%;
+        }
+
+        /* 7. Ajustar el tamano del texto de KPI */
+        .dd-kpi-value {
+          font-size: 22px;
+        }
+
+        /* 8. Canvas de Chart.js se redimensionan correctamente */
+        .dd-card canvas {
+          width: 100% !important;
+          height: auto !important;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .dd-kpi-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+
+    <!-- LOADING STATE -->
+    <div class="dd-loading" id="ddLoading">Cargando Dashboard...</div>
+
+    <!-- DASHBOARD CONTENT (hidden until data loads) -->
+    <div id="ddContent" style="display:none;">
+
+      <!-- HEADER -->
+      <div class="dd-header">
+        <div class="dd-logo">Dashboard<span> La Comarca</span></div>
+        <div class="dd-header-right">
+          <div class="dd-hstats">
+            <div class="dd-hstat">
+              <div class="dd-hstat-val" id="ddTotalGen">C$ 0</div>
+              <div class="dd-hstat-lbl">Total General</div>
+            </div>
+            <div class="dd-hstat">
+              <div class="dd-hstat-val" id="ddTotalTx">0</div>
+              <div class="dd-hstat-lbl">Transacciones</div>
+            </div>
+            <div class="dd-hstat">
+              <div class="dd-hstat-val" id="ddPeriodo">-</div>
+              <div class="dd-hstat-lbl">Periodo</div>
+            </div>
+          </div>
+          <div class="dd-actions">
+            <button class="dd-btn-action primary" onclick="abrirModalVenta()">+ Nueva Venta</button>
+            <button class="dd-btn-action" onclick="showTab('entrada')">+ Ingresar Producto</button>
+            <button class="dd-btn-action danger" onclick="abrirModalFinanzas()">- Registrar Gasto</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- NAV -->
+      <div class="dd-nav">
+        <button class="dd-tab active" onclick="showDashPanel('resumen',this)">Resumen</button>
+        <button class="dd-tab" onclick="showDashPanel('vendedores',this)">Vendedores por Mes</button>
+        <button class="dd-tab" onclick="showDashPanel('productos',this)">Top Productos</button>
+        <button class="dd-tab" onclick="showDashPanel('pxv',this)">Productos por Vendedor</button>
+        <button class="dd-tab" onclick="showDashPanel('tiempo',this)">Analisis de Tiempo</button>
+        <button class="dd-tab" onclick="showDashPanel('topDias',this)">Mejores Dias</button>
+        <button class="dd-tab" onclick="showDashPanel('ddFinanzas',this)">Finanzas</button>
+        <button class="dd-tab" onclick="showDashPanel('ddInventario',this)">Inventario Real</button>
+      </div>
+
+      <div class="dd-main">
+        <!-- RESUMEN -->
+        <div id="ddp-resumen" class="dd-panel active">
+          <div class="dd-kpi-grid" id="ddKpiGrid"></div>
+          <div class="dd-grid-2">
+            <div class="dd-card">
+              <div class="dd-card-title">Ingresos por Mes</div><canvas id="chartMes"></canvas>
+            </div>
+            <div class="dd-card">
+              <div class="dd-card-title">Ventas por Vendedor - Total Acumulado</div><canvas id="chartVendTot"></canvas>
+            </div>
+          </div>
+          <div class="dd-grid-2">
+            <div class="dd-card">
+              <div class="dd-card-title">Top 8 Productos Mas Vendidos</div><canvas id="chartProdRes"></canvas>
+            </div>
+            <div class="dd-card">
+              <div class="dd-card-title">Ventas por Dia de la Semana</div><canvas id="chartDiaSem"></canvas>
+            </div>
+          </div>
+          <div class="dd-grid-2">
+            <div class="dd-card">
+              <div class="dd-card-title">Ventas por Canal</div><canvas id="chartCanal"
+                style="max-height:320px"></canvas>
+            </div>
+            <div class="dd-card" id="ddCanalStats"></div>
+          </div>
+        </div>
+
+        <!-- VENDEDORES POR MES -->
+        <div id="ddp-vendedores" class="dd-panel">
+          <div class="dd-section-title">Rendimiento de <span>Vendedores</span> por Mes</div>
+          <div class="dd-filter-bar">
+            <span class="dd-filter-label">Ver:</span>
+            <button class="dd-filter-btn active" onclick="setVendMode('total',this)">Monto C$</button>
+            <button class="dd-filter-btn" onclick="setVendMode('ventas',this)"># Transacciones</button>
+          </div>
+          <div class="dd-grid-full dd-card">
+            <div class="dd-card-title">Comparativa Mensual por Vendedor</div><canvas id="chartVendMes"
+              style="max-height:350px"></canvas>
+          </div>
+          <div class="dd-grid-2" style="margin-top:20px">
+            <div class="dd-card">
+              <div class="dd-card-title">Tabla de Posiciones por Mes</div>
+              <div id="tablaVendMes"></div>
+            </div>
+            <div class="dd-card">
+              <div class="dd-card-title">Distribucion Total Acumulada</div><canvas id="chartPie"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- TOP PRODUCTOS -->
+        <div id="ddp-productos" class="dd-panel">
+          <div class="dd-section-title">Top <span>Productos</span> Mas Vendidos</div>
+          <div class="dd-grid-2">
+            <div class="dd-card" style="grid-column:1/-1">
+              <div class="dd-card-title">Unidades Vendidas por Producto</div><canvas id="chartProdBar"
+                style="max-height:380px"></canvas>
+            </div>
+          </div>
+          <div class="dd-card">
+            <div class="dd-card-title">Ranking Detallado</div>
+            <div id="tablaProductos"></div>
+          </div>
+        </div>
+
+        <!-- PRODUCTOS POR VENDEDOR -->
+        <div id="ddp-pxv" class="dd-panel">
+          <div class="dd-section-title">Productos por <span>Vendedor</span></div>
+          <div id="vendSelector" style="display:flex;gap:8px;margin-bottom:20px"></div>
+          <div class="dd-grid-2">
+            <div class="dd-card">
+              <div class="dd-card-title">Distribucion de Productos</div><canvas id="chartPxVPie"
+                style="max-height:320px"></canvas>
+            </div>
+            <div class="dd-card">
+              <div class="dd-card-title">Top Productos del Vendedor</div>
+              <div id="tablaPxV"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ANALISIS DE TIEMPO -->
+        <div id="ddp-tiempo" class="dd-panel">
+          <div class="dd-section-title">Analisis de <span>Tiempo</span></div>
+          <div class="dd-filter-bar">
+            <span class="dd-filter-label">Agrupar por:</span>
+            <button class="dd-filter-btn active" onclick="setTiempoMode('dia',this)">Dia</button>
+            <button class="dd-filter-btn" onclick="setTiempoMode('semana',this)">Dia de Semana</button>
+            <button class="dd-filter-btn" onclick="setTiempoMode('mes',this)">Mes</button>
+          </div>
+          <div class="dd-card dd-grid-full">
+            <div class="dd-card-title" id="tiempoTitle">Ventas por Dia</div><canvas id="chartTiempo"
+              style="max-height:380px"></canvas>
+          </div>
+          <div class="dd-grid-2" style="margin-top:20px">
+            <div class="dd-card">
+              <div class="dd-card-title">Dia de Semana mas Activo</div><canvas id="chartDiaSem2"
+                style="max-height:260px"></canvas>
+            </div>
+            <div class="dd-card">
+              <div class="dd-card-title">Ingresos por Dia de Semana</div><canvas id="chartDiaSemMonto"
+                style="max-height:260px"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- MEJORES DIAS -->
+        <div id="ddp-topDias" class="dd-panel">
+          <div class="dd-section-title">Los <span>Mejores Dias</span> de Venta</div>
+          <div class="dd-grid-2">
+            <div class="dd-card">
+              <div class="dd-card-title">Top 10 Dias por Ingresos</div>
+              <div id="topDiasList"></div>
+            </div>
+            <div class="dd-card">
+              <div class="dd-card-title">Top Dias - Grafico</div><canvas id="chartTopDias"
+                style="max-height:340px"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- FINANZAS -->
+        <div id="ddp-ddFinanzas" class="dd-panel">
+          <div class="dd-section-title">Control de <span>Finanzas</span></div>
+          <div class="dd-kpi-grid" style="grid-template-columns:repeat(4,1fr)" id="ddFinKpis"></div>
+          <div class="dd-card">
+            <div class="dd-card-title">Historial de Movimientos Financieros</div>
+            <div id="ddFinTable"></div>
+          </div>
+        </div>
+
+        <!-- INVENTARIO REAL -->
+        <div id="ddp-ddInventario" class="dd-panel">
+          <div class="dd-section-title"><span>Inventario</span> Real</div>
+          <div class="dd-filter-bar">
+            <span class="dd-filter-label">Buscar:</span>
+            <input type="text" id="ddInvSearch" placeholder="Codigo o nombre..." oninput="filterDDInventario()"
+              style="padding:6px 14px;border:1px solid var(--dborder);border-radius:4px;background:var(--dcard);color:var(--dtext);font-family:'DM Mono',monospace;font-size:12px;width:220px;">
+            <button class="dd-filter-btn" onclick="filterDDInventario('alertas')">Solo Alertas</button>
+            <button class="dd-filter-btn" onclick="filterDDInventario('todos')">Todos</button>
+          </div>
+          <div class="dd-card">
+            <div class="dd-card-title">Stock Actual por Producto</div>
+            <div id="ddInvTable"></div>
+          </div>
+        </div>
+
+      </div><!-- .dd-main -->
+    </div><!-- #ddContent -->
+  </div><!-- .dark-dashboard -->
+</div>
