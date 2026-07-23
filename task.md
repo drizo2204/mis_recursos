@@ -1,0 +1,9 @@
+- [x] Update `config.js` with `HOJA_CIERRES`
+- [x] Update `Comp_ModalVenta.html` and `Service_Ventas.js` to handle "Método de Pago" (Efectivo/Digital)
+- [x] Create `obtenerResumenCierreDiario` in `Service_Finanzas.js`
+- [x] Create `guardarCierreDiario` in `Service_Finanzas.js`
+- [x] Create `obtenerHistorialCierres` in `Service_Finanzas.js`
+- [x] Add Cierre Diario UI in `views_of_the_system.html` (under Finanzas tab)
+- [x] Add frontend JS logic in `Global_JS.html` for closing workflows
+- [ ] Verify functionality
+- [ ] Create walkthrough
