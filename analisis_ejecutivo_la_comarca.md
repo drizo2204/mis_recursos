@@ -22,7 +22,7 @@
 
 ```mermaid
 graph TD
-    subgraph "Tú (Cristian)"
+    subgraph "Dylan"
         A1["🖥️ Depto. Tecnología y Sistemas<br/>Desarrollo del SGI (ERP)"]
         A2["💰 Depto. Finanzas<br/>(Co-gestión)"]
         A3["📦 Depto. Compras e Importación<br/>Ruta: China → USA → Nicaragua"]
