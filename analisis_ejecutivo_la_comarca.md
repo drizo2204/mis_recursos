@@ -255,6 +255,7 @@ sequenceDiagram
     SV-->>JS: {success: true}
     JS-->>V: ¡Venta registrada!
 ```
+
 <!-- slide -->
 #### 🔄 Flujo de Transferencia
 ```mermaid
@@ -279,6 +280,7 @@ sequenceDiagram
         end
     end
 ```
+
 <!-- slide -->
 #### 💰 Flujo de Cierre Diario
 ```mermaid
