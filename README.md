@@ -29,3 +29,6 @@ contexto: **Banco LAFISE Bancentro | Gerencia de Operaciones y Plataformas de T.
 • **Aprovisionamiento y TMS (PMT):** Parametrización masiva de terminales Verifone Android (X990) y Engage (P400, V400c), resolviendo discrepancias en payloads JSON, ruteo de APNs celulares (Claro, Tigo, Thingstream) y catálogos de hosts transaccionales.
 • **Certificación y QA de Aplicativos de Pago:** Ejecución de baterías de homologación de 44 casos de prueba (Venta, Cuotas Tasa 0, Redención de Puntos, Módulo Hotelero Check-In/Out, Reversos por timeout y Cierres de Lote).
 • **Integración de Cajas Comerciales (VPOS):** Soporte e impulso de soluciones de POS integrado vía WebSocket/TCP sockets locales (JSON) y concentradores corporativos (Evertec Transerver para Walmart).
+
+
+"Realicé mi pasantía en el área de Medios de Pago y Adquirencia en Banco LAFISE, participando activamente en el desarrollo, optimización y auditoría de soluciones transaccionales (Virtual POS y Web POS). Trabajé en la integración de pasarelas de pago modernas (CyberSource REST API), análisis de tramas bajo el estándar ISO 8583 hacia switches transaccionales (IntelliNAC), cumplimiento de normativas de seguridad PCI-DSS / Tokenización con Visa, y formulación arquitectónica para pagos desatendidos (Kioscos y Vending Machines)."
